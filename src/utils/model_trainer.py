@@ -2,36 +2,42 @@ from __future__ import print_function, division
 
 import time
 import copy
-from fastai.vision import *
-from utils import dataset_splitters, transform_definitions_generator
+from fastai.vision.all import *
+from utils import dataset_splitters, transform_definitions_generator, fastai_cluster_plots_utils, path_utils
+import matplotlib.pyplot as plt
+
+# weak_learner_in_ensemble_save_name = model_trainer.train_model_in_ensemble(ensemble_index,
+#                                                                            weak_learner_index,
+#                                                                            dataloaders,
+#                                                                            monte_carlo_drawn_images_root_path)
 
 
-def train_model_in_ensamble(ensemble_index, model_index, data_manager):
-    monte_carlo_drawn_images_root_path = dataset_splitters.monte_carlo_draw_balanced_train_and_validation_sets(
-        ensemble_index, model_index, 2, 1)
-    transforms = transform_definitions_generator.generate_simple_fastai_transformations_for_train_and_validation_image_datasets()
-
-    data = data_manager.generate_data_bunch_from_path(monte_carlo_drawn_images_root_path)
-    print(monte_carlo_drawn_images_root_path)
-    data.show_batch(3)
-    learn = cnn_learner(data, models.resnet34, metrics=error_rate)
-    learn.fit_one_cycle(1)
-
-    stage_1_save_name = f"ensemble_{ensemble_index}_model_{model_index}_stage_1"
-    learn.save(stage_1_save_name)
-    learn.unfreeze()
-    # learn.lr_find(start_lr=1e-5, end_lr=1e-1)
-    # learn.recorder.plot()
-    plt.show()
-
-    learn.fit_one_cycle(1, max_lr=slice(3e-5, 3e-4))
-    stage_2_save_name = f"ensemble_{ensemble_index}_model_{model_index}_stage_2"
-    learn.save(stage_2_save_name)
-    print("Model path")
-    print(learn.model_dir)
-    learn.export()
-
-    return monte_carlo_drawn_images_root_path
+# def train_model_in_ensemble(ensemble_index, model_index, dataloaders, monte_carlo_drawn_images_root_path):
+#     monte_carlo_drawn_images_root_path = dataset_splitters.monte_carlo_draw_balanced_train_and_validation_sets(
+#         ensemble_index, model_index, 2, 1)
+#     transforms = transform_definitions_generator.generate_simple_fastai_transformations_for_train_and_validation_image_datasets()
+#
+#     data = data_manager.generate_data_bunch_from_path(monte_carlo_drawn_images_root_path)
+#     print(monte_carlo_drawn_images_root_path)
+#     data.show_batch(3)
+#     learn = cnn_learner(data, models.resnet18, metrics=error_rate)
+#     learn.fit_one_cycle(1)
+#
+#     stage_1_save_name = f"ensemble_{ensemble_index}_model_{model_index}_stage_1"
+#     learn.save(stage_1_save_name)
+#     learn.unfreeze()
+#     # learn.lr_find(start_lr=1e-5, end_lr=1e-1)
+#     # learn.recorder.plot()
+#     plt.show()
+#
+#     learn.fit_one_cycle(1, max_lr=slice(3e-5, 3e-4))
+#     stage_2_save_name = f"ensemble_{ensemble_index}_model_{model_index}_stage_2"
+#     learn.save(stage_2_save_name)
+#     print("Model path")
+#     print(learn.model_dir)
+#     learn.export()
+#
+#     return monte_carlo_drawn_images_root_path
 
     # learn.load(stage_2_save_name);
     # interp = ClassificationInterpretation.from_learner(learn)
@@ -39,31 +45,34 @@ def train_model_in_ensamble(ensemble_index, model_index, data_manager):
     # plt.show()
 
 
-def train_model_in_ensamble(ensemble_index, model_index, dataloaders, dataset_path):
+def train_model_in_ensemble(ensemble_index, model_index, dataloaders, dataset_path):
     # dataset_path = Path(dataset_path)
     # current_path = Path.cwd()
     # dataset_path = current_path / dataset_name
     # files = get_image_files(dataset_path)
 
     # print(spop_data_block.summary(dataset_path))
-    # # # dls.show_batch(nrows=4, ncols=3)
+    print(dataloaders)
+    dataloaders.show_batch(nrows=4, ncols=3)
     # print(dls.get_idxs)
-    # # plt.show()
+    plt.show()
+
+    dataset_name = path_utils.path_leaf(dataset_path)
     # learn = cnn_learner(dls, resnet34, pretrained=False, metrics=error_rate)
     # learn.fine_tune(2)
 
-    learn = cnn_learner(dataloaders, resnet50, pretrained=True, metrics=error_rate)
-    learn.fit_one_cycle(20, 3e-3)
-    loss_plot = get_plot_loss(learn.recorder)
-    plt.savefig(f'first_loss_plot_{path_leaf(dataset_path)}.png')
+    learn = cnn_learner(dataloaders, resnet18, pretrained=True, metrics=error_rate)
+    learn.fit_one_cycle(1, 3e-3)
+    loss_plot = fastai_cluster_plots_utils.get_plot_loss(learn.recorder,dataset_name )
+    plt.savefig(f'first_loss_plot_{dataset_name}.png')
     learn.unfreeze()
     learn.lr_find(show_plot=False)
-    lr_plot = get_plot_lr_find(learn.recorder)
-    plt.savefig(f'lr_find_{path_leaf(dataset_path)}.png')
-    learn.fit_one_cycle(100, lr_max=6e-3)
-    loss_plot = get_plot_loss(learn.recorder)
-    plt.savefig(f'second_loss_plot_{path_leaf(dataset_path)}.png')
-    learn.export()
+    lr_plot = fastai_cluster_plots_utils.get_plot_lr_find(learn.recorder, dataset_name)
+    plt.savefig(f'lr_find_{dataset_name}.png')
+    # learn.fit_one_cycle(100, lr_max=6e-3)
+    # loss_plot = get_plot_loss(learn.recorder)
+    # plt.savefig(f'second_loss_plot_{path_leaf(dataset_path)}.png')
+    # learn.export()
 
 
 def train_model(model, criterion, optimizer, scheduler, data_loaders, dataset_sizes, device,

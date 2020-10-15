@@ -10,6 +10,8 @@ import os.path
 from utils import ensemble_validation_data_manager, transform_definitions_generator, data_block_manager, \
     ensemble_manager
 import shutil, errno
+from os import path
+
 from pathlib import Path
 
 ntpath.basename("a/b/c")
@@ -65,31 +67,21 @@ def path_leaf(path):
 
 
 def remove_old_datasets():
-    shutil.rmtree("dataset")
-    shutil.rmtree("ensemble_validation_data")
-    shutil.rmtree("ensemble_datasets")
+    if(path.isdir('dataset')):
+        shutil.rmtree("dataset")
 
+    if(path.isdir('ensemble_validation_data')):
+        shutil.rmtree("ensemble_validation_data")
+
+    if (path.isdir('../ensemble_datasets')):
+        shutil.rmtree("../ensemble_datasets")
 
 def create_copy_of_source_dataset():
-    dataset_origin_path_source = "origin/dataset_origin"
+    print(os.listdir())
+    dataset_origin_path_source = "../origin/dataset_origin"
     dataset_path = "dataset"
     copyanything(dataset_origin_path_source, dataset_path)
     return dataset_path
-
-
-if __name__ == '__main__':
-    run_data_augmentation_experiment_1()
-
-
-def run_data_augmentation_experiment():
-    remove_old_datasets()
-    source_copy_dataset_path = create_copy_of_source_dataset()
-
-    data_augmentation_transforms = transform_definitions_generator.generate_baseline_item_and_batch_transforms()
-    data_block_manager = data_block_manager.DataBlockManager(data_augmentation_transforms)
-
-    models = create_arbitary_amount_models(models_to_train=5, data_block_manager)
-
 
 
 def create_arbitary_amount_models(models_to_train, data_block_manager):
@@ -123,6 +115,21 @@ def run_monte_carlo_experiment():
     ensemble = ensemble_manager.generate_ensembles(ensemble_count,
                                                    weak_learner_count_in_each_ensemble,
                                                    data_block_manager)
+
+def run_data_augmentation_experiment_1():
+    remove_old_datasets()
+    source_copy_dataset_path = create_copy_of_source_dataset()
+
+    data_augmentation_transforms = transform_definitions_generator.generate_baseline_item_and_batch_transforms()
+    data_block_manager_instance = data_block_manager.DataBlockManager(data_augmentation_transforms)
+
+    models = create_arbitary_amount_models(5, data_block_manager_instance)
+
+
+if __name__ == '__main__':
+    run_data_augmentation_experiment_1()
+
+
 
     # def run_demo():
     # path = untar_data(URLs.MNIST_SAMPLE)

@@ -1,4 +1,7 @@
 from fastai.vision.all import *
+from pathlib import Path
+import matplotlib.pyplot as plt
+
 
 class DataBlockManager:
 
@@ -8,20 +11,14 @@ class DataBlockManager:
 
     def generate_data_block(self):
         data_block = DataBlock(blocks=(ImageBlock, CategoryBlock),
-                                    get_items=get_image_files,
-                                    splitter=RandomSplitter(),
-                                    get_y=parent_label,
-                                    item_tfms=self.transforms["item"],
-                                    batch_tfms=self.transforms["batch"])
+                               get_items=get_image_files,
+                               splitter=RandomSplitter(),
+                               get_y=parent_label,
+                               item_tfms=self.transforms["item"],
+                               batch_tfms=self.transforms["batch"])
 
-        # spop_data_block = DataBlock(blocks=(ImageBlock, CategoryBlock),
-        #                             get_items=get_image_files,
-        #                             splitter=RandomSplitter(),
-        #                             get_y=parent_label,
-        #                             item_tfms=Resize(460),
-        #                             batch_tfms=aug_transforms(size=224, min_scale=0.75))
         return data_block
 
-    def dataloaders(self, dataset_path):
-        return self.data_block.dataloaders(dataset_path)
-
+    def dataloaders(self, dataset_path, batch_size):
+        dls = self.data_block.dataloaders(Path(dataset_path), bs=batch_size)
+        return dls
