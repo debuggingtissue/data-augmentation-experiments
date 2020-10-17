@@ -1,4 +1,3 @@
-from torchvision import datasets, transforms
 from fastai.vision.all import *
 
 # For data augmentation, the 800x800px images at
