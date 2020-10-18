@@ -55,8 +55,8 @@ def train_model_in_ensemble(ensemble_index, model_index, dataloaders, dataset_pa
 
     # print(spop_data_block.summary(dataset_path))
     # print(dataloaders)
-    # dataloaders.show_batch(nrows=4, ncols=3, show=False)
-    # plt.savefig(f'sample_batch_{dataset_name}.png')
+    dataloaders.show_batch(nrows=4, ncols=3, show=True)
+    plt.savefig(f'sample_batch_{dataset_name}.png')
     # print(dls.get_idxs)
 
     # learn = cnn_learner(dls, resnet34, pretrained=False, metrics=error_rate)
