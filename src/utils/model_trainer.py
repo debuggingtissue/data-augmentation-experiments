@@ -50,24 +50,25 @@ def train_model_in_ensemble(ensemble_index, model_index, dataloaders, dataset_pa
     # current_path = Path.cwd()
     # dataset_path = current_path / dataset_name
     # files = get_image_files(dataset_path)
+    dataset_name = path_utils.path_leaf(dataset_path)
 
     # print(spop_data_block.summary(dataset_path))
     print(dataloaders)
     dataloaders.show_batch(nrows=4, ncols=3)
+    plt.savefig(f'sample_batch_{dataset_name}.png')
     # print(dls.get_idxs)
     plt.show()
 
-    dataset_name = path_utils.path_leaf(dataset_path)
+
     # learn = cnn_learner(dls, resnet34, pretrained=False, metrics=error_rate)
     # learn.fine_tune(2)
 
     learn = cnn_learner(dataloaders, resnet18, pretrained=True, metrics=error_rate)
-    learn.fit_one_cycle(1, 3e-3)
-    loss_plot = fastai_cluster_plots_utils.get_plot_loss(learn.recorder,dataset_name )
+    learn.fit_one_cycle(3, 3e-3)
+    learn.recorder.plot_loss()
     plt.savefig(f'first_loss_plot_{dataset_name}.png')
     learn.unfreeze()
-    learn.lr_find(show_plot=False)
-    lr_plot = fastai_cluster_plots_utils.get_plot_lr_find(learn.recorder, dataset_name)
+    learn.lr_find(show_plot=True)
     plt.savefig(f'lr_find_{dataset_name}.png')
     # learn.fit_one_cycle(100, lr_max=6e-3)
     # loss_plot = get_plot_loss(learn.recorder)
