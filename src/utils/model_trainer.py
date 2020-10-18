@@ -1,5 +1,6 @@
 from __future__ import print_function, division
-
+import matplotlib
+matplotlib.use('Agg')
 import time
 import copy
 from fastai.vision.all import *
