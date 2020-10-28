@@ -13,7 +13,7 @@ def generate_ensembles(ensemble_count, weak_learner_count_in_each_ensemble, data
             print(monte_carlo_drawn_images_root_path)
 
 
-            dataloaders = data_block_manager.dataloaders(str(monte_carlo_drawn_images_root_path), 10)
+            dataloaders = data_block_manager.dataloaders(str(monte_carlo_drawn_images_root_path), 3)
 
             weak_learner_in_ensemble_save_name = model_trainer.train_model_in_ensemble(ensemble_index,
                                                                                        weak_learner_index,

@@ -25,3 +25,14 @@ def get_plot_loss(recorder, dataset_name, skip_start=0, with_valid=True):
         ax.legend()
         ax.set_xlabel(f'Learning Rate for {dataset_name}')
     return fig
+
+
+def get_batch_plot(dataloader, b=None, max_n=9, ctxs=None, show=True, unique=False, **kwargs):
+    if unique:
+        old_get_idxs = dataloader.get_idxs
+    dataloader.get_idxs = lambda: Inf.zeros
+    if b is None: b = dataloader.one_batch()
+    if not show:
+        return dataloader._pre_show_batch(b, max_n=max_n)
+    show_batch(*dataloader._pre_show_batch(b, max_n=max_n), ctxs=ctxs, max_n=max_n, **kwargs)
+    if unique: dataloader.get_idxs = old_get_idxs

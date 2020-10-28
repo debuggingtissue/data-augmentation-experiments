@@ -5,12 +5,16 @@
 #
 # matplotlib.use('Agg')
 # import matplotlib.pyplot as plt
+#
+import argparse
+
 import ntpath
 import os.path
 from utils import ensemble_validation_data_manager, transform_definitions_generator, data_block_manager, \
     ensemble_manager
 import shutil, errno
 from os import path
+import argparse
 
 from pathlib import Path
 
@@ -67,14 +71,15 @@ def path_leaf(path):
 
 
 def remove_old_datasets():
-    if(path.isdir('dataset')):
+    if (path.isdir('dataset')):
         shutil.rmtree("dataset")
 
-    if(path.isdir('ensemble_validation_data')):
+    if (path.isdir('ensemble_validation_data')):
         shutil.rmtree("ensemble_validation_data")
 
     if (path.isdir('../ensemble_datasets')):
         shutil.rmtree("../ensemble_datasets")
+
 
 def create_copy_of_source_dataset():
     print(os.listdir())
@@ -116,6 +121,7 @@ def run_monte_carlo_experiment():
                                                    weak_learner_count_in_each_ensemble,
                                                    data_block_manager)
 
+
 def run_data_augmentation_experiment_1():
     remove_old_datasets()
     source_copy_dataset_path = create_copy_of_source_dataset()
@@ -127,19 +133,32 @@ def run_data_augmentation_experiment_1():
 
 
 if __name__ == '__main__':
-    run_data_augmentation_experiment_1()
+    parser = argparse.ArgumentParser(description="Inputs for training neural net")
+    parser.add_argument("-mc", "--number_of_models", type=str,
+                        help="Number of models with balanced monte carlo drawn datasets.", required=True)
+    parser.add_argument("-lr_s1", "--learning_rates_for_step_1", nargs="*",
+                        type=float,
+                        help="Different learning rates to try in step 1"
+                             "Each learning rate is used for each model and is of type float",
+                        required=True)
 
+    args = parser.parse_args()
+    number_of_models = args.number_of_models
+    learning_rates_for_step_1 = args.learning_rates_for_step_1
+    print(number_of_models)
+    print(learning_rates_for_step_1)
 
+    # run_data_augmentation_experiment_1(number_of_models, )
 
     # def run_demo():
     # path = untar_data(URLs.MNIST_SAMPLE)
     # print(path.ls())
     # files = get_image_files(path / "train")
     # files = None
-# pets = DataBlock(blocks=(ImageBlock, CategoryBlock),
-#                  get_items=get_image_files,
-#                  splitter=RandomSplitter(),
-#                  get_y=using_attr(RegexLabeller(r'(.+)_\d+.jpg$'), 'name'),
-#                  item_tfms=Resize(460),
-#                  batch_tfms=aug_transforms(size=224))
-# dls = pets.dataloaders(untar_data(URLs.PETS) / "images")
+    # pets = DataBlock(blocks=(ImageBlock, CategoryBlock),
+    #                  get_items=get_image_files,
+    #                  splitter=RandomSplitter(),
+    #                  get_y=using_attr(RegexLabeller(r'(.+)_\d+.jpg$'), 'name'),
+    #                  item_tfms=Resize(460),
+    #                  batch_tfms=aug_transforms(size=224))
+    # dls = pets.dataloaders(untar_data(URLs.PETS) / "images")

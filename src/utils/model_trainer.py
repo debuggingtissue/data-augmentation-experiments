@@ -1,11 +1,15 @@
 from __future__ import print_function, division
 import matplotlib
-matplotlib.use('Agg')
+
+# matplotlib.use('Agg')
 import time
 import copy
 from fastai.vision.all import *
-from utils import dataset_splitters, transform_definitions_generator, fastai_cluster_plots_utils, path_utils
+from src.utils import dataset_splitters, transform_definitions_generator, fastai_cluster_plots_utils, path_utils
+from src.utils.transform_definitions_generator import generate_baseline_item_and_batch_transforms
+
 import matplotlib.pyplot as plt
+
 
 # weak_learner_in_ensemble_save_name = model_trainer.train_model_in_ensemble(ensemble_index,
 #                                                                            weak_learner_index,
@@ -40,10 +44,15 @@ import matplotlib.pyplot as plt
 #
 #     return monte_carlo_drawn_images_root_path
 
-    # learn.load(stage_2_save_name);
-    # interp = ClassificationInterpretation.from_learner(learn)
-    # interp.plot_confusion_matrix()
-    # plt.show()
+# learn.load(stage_2_save_name);
+# interp = ClassificationInterpretation.from_learner(learn)
+# interp.plot_confusion_matrix()
+# plt.show()
+
+def clear_pyplot_memory():
+    plt.clf()
+    plt.cla()
+    plt.close()
 
 
 def train_model_in_ensemble(ensemble_index, model_index, dataloaders, dataset_path):
@@ -55,23 +64,25 @@ def train_model_in_ensemble(ensemble_index, model_index, dataloaders, dataset_pa
 
     # print(spop_data_block.summary(dataset_path))
     # print(dataloaders)
-    dataloaders.show_batch(nrows=4, ncols=3, show=True)
-    plt.savefig(f'sample_batch_{dataset_name}.png')
-    plt.clf()
-    plt.cla()
-    plt.close()
+    # dataloaders.show_batch(nrows=4, ncols=3, show=True)
+    # plt.savefig(f'sample_batch_{dataset_name}.png')
+    # clear_pyplot_memory()
 
     # print(dls.get_idxs)
     # learn = cnn_learner(dls, resnet34, pretrained=False, metrics=error_rate)
     # learn.fine_tune(2)
 
     learn = cnn_learner(dataloaders, resnet18, pretrained=True, metrics=error_rate)
-    learn.fit_one_cycle(3, 3e-3)
+    learn.fit_one_cycle(100, 3e-2)
     learn.recorder.plot_loss()
-    plt.savefig(f'first_loss_plot_{dataset_name}.png')
-    learn.unfreeze()
-    learn.lr_find(show_plot=True)
-    plt.savefig(f'lr_find_{dataset_name}.png')
+    plt.show()
+
+
+    # learn.unfreeze()
+    # learn.lr_find(show_plot=True)
+    # plt.savefig(f'lr_find_{dataset_name}.png')
+    # clear_pyplot_memory()
+
     # learn.fit_one_cycle(100, lr_max=6e-3)
     # loss_plot = get_plot_loss(learn.recorder)
     # plt.savefig(f'second_loss_plot_{path_leaf(dataset_path)}.png')
