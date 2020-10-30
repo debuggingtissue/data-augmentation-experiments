@@ -1,7 +1,7 @@
 from __future__ import print_function, division
 import matplotlib
 
-# matplotlib.use('Agg')
+matplotlib.use('Agg')
 import time
 import copy
 from fastai.vision.all import *
@@ -60,6 +60,15 @@ def train_model_in_ensemble(run_arguments, ensemble_index, model_index, dataload
     # current_path = Path.cwd()
     # dataset_path = current_path / dataset_name
     # files = get_image_files(dataset_path)
+
+    # self.learning_rate_first_one_cycle = learning_rate_first_one_cycle
+    # self.epochs_first_one_cycle = epochs_first_one_cycle
+    # self.train_examples_draw_count_per_class = train_examples_draw_count_per_class
+    # self. = batch_size
+
+    model_arguments = f'tes: {run_arguments.train_examples_draw_count_per_class}\n' \
+                      f'lr_oc1: {run_arguments.learning_rate_first_one_cycle}\n' \
+                      f'bs: {run_arguments.batch_size}'
     dataset_name = path_utils.path_leaf(dataset_path)
 
     # print(spop_data_block.summary(dataset_path))
@@ -73,12 +82,21 @@ def train_model_in_ensemble(run_arguments, ensemble_index, model_index, dataload
     # learn.fine_tune(2)
 
     learn = cnn_learner(dataloaders, resnet18, pretrained=True, metrics=error_rate)
-    #3e-2
+    # 3e-2
     learn.fit_one_cycle(run_arguments.epochs_first_one_cycle, run_arguments.learning_rate_first_one_cycle)
-    if(run_arguments.save_plots):
+    if (run_arguments.save_plots):
+
+
+        # plt.figure(figsize=(20, 10))
+        plt.figure(figsize=(10, 5))
         learn.recorder.plot_loss()
-        plt.show()
-    clear_pyplot_memory()
+        plt.subplots_adjust(right=0.78)
+        plt.text(0.82, 0.5, model_arguments, fontsize=14, transform=plt.gcf().transFigure)
+
+        plt.title(dataset_name)
+
+        plt.savefig(f'first_loss_plot_{dataset_name}.png')
+        clear_pyplot_memory()
 
     # learn.unfreeze()
     # learn.lr_find(show_plot=True)

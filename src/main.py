@@ -90,9 +90,6 @@ def create_copy_of_source_dataset():
     return dataset_path
 
 
-def create_arbitary_amount_models(run_arguments, data_block_manager):
-
-
 def run_monte_carlo_experiment(run_arguments):
     # train_spop_imbalance_classifier("../dataset_origin")
     # train_spop_classifier("../dataset_46_balanced")
@@ -116,9 +113,7 @@ def run_monte_carlo_experiment(run_arguments):
     return models
 
     # extract x images from positive and negative
-    # ensemble = ensemble_manager.generate_ensembles(ensemble_count,
-    #                                                weak_learner_count_in_each_ensemble,
-    #                                                data_block_manager)
+
 
 
 def run_data_augmentation_experiment_1(run_arguments):
@@ -128,44 +123,60 @@ def run_data_augmentation_experiment_1(run_arguments):
     data_augmentation_transforms = transform_definitions_generator.generate_baseline_item_and_batch_transforms()
     data_block_manager_instance = data_block_manager.DataBlockManager(data_augmentation_transforms)
 
-    models = create_arbitary_amount_models(models_to_train=run_arguments.models_per_config_scheme,
-                                           data_block_manager_instance)
+    # models = create_arbitary_amount_models(models_to_train=run_arguments.models_per_config_scheme,
+    #                                        data_block_manager_instance)
+    ensemble = ensemble_manager.generate_ensembles(run_arguments,
+                                                   data_block_manager_instance)
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Inputs for training neural net")
-    parser.add_argument("-mc", "--number_of_models", type=str,
-                        help="Number of models with balanced monte carlo drawn datasets.", required=True)
-    parser.add_argument("-lr_s1_list", "--learning_rate_first_one_cycle_list", nargs="*",
-                        type=float,
-                        help="Different learning rates to try in first one cycle"
-                             "Each learning rate is used for each model and is of type float",
-                        required=True)
+    # parser = argparse.ArgumentParser(description="Inputs for training neural net")
+    # parser.add_argument("-mc", "--number_of_models", type=str,
+    #                     help="Number of models with balanced monte carlo drawn datasets.", required=True)
+    # parser.add_argument("-lr_s1_list", "--learning_rate_first_one_cycle_list", nargs="*",
+    #                     type=float,
+    #                     help="Different learning rates to try in first one cycle"
+    #                          "Each learning rate is used for each model and is of type float",
+    #                     required=True)
+    #
+    # parser.add_argument("-bs_list", "--batch_size_list", nargs="*",
+    #                     type=float,
+    #                     help="Different learning rates to try in first one cycle"
+    #                          "Each learning rate is used for each model and is of type float",
+    #                     required=True)
+    #
+    # args = parser.parse_args()
+    # number_of_models = args.number_of_models
+    # learning_rate_first_one_cycle_list = args.learning_rate_first_one_cycle_list
+    # batch_size_list = args.batch_size_list
+    # print(number_of_models)
+    # print(learning_rate_first_one_cycle_list)
 
-    parser.add_argument("-bs_list", "--batch_size_list", nargs="*",
-                        type=float,
-                        help="Different learning rates to try in first one cycle"
-                             "Each learning rate is used for each model and is of type float",
-                        required=True)
-
-    args = parser.parse_args()
-    number_of_models = args.number_of_models
-    learning_rate_first_one_cycle_list = args.learning_rate_first_one_cycle_list
-    batch_size_list = args.batch_size_list
-    print(number_of_models)
-    print(learning_rate_first_one_cycle_list)
-
-    for learning_rate_first_one_cycle in learning_rate_first_one_cycle_list:
-        for batch_size in batch_size_list:
+    for learning_rate_first_one_cycle in [3e-3]:
+        for batch_size in [3]:
             run_arguments = run_arguments.RunArguments(
                 train_examples_draw_count_per_class=36,
                 ensemble_count=1,
-                weak_learner_count_in_each_ensemble=number_of_models,
+                weak_learner_count_in_each_ensemble=1,
                 learning_rate_first_one_cycle=learning_rate_first_one_cycle,
-                epochs_first_one_cycle=100,
-                batch_size=3)
+                epochs_first_one_cycle=50,
+                batch_size=batch_size)
+            run_data_augmentation_experiment_1(run_arguments)
 
-    run_data_augmentation_experiment_1(run_arguments)
+
+
+    # for learning_rate_first_one_cycle in learning_rate_first_one_cycle_list:
+    #     for batch_size in batch_size_list:
+    #         run_arguments = run_arguments.RunArguments(
+    #             train_examples_draw_count_per_class=36,
+    #             ensemble_count=1,
+    #             weak_learner_count_in_each_ensemble=number_of_models,
+    #             learning_rate_first_one_cycle=learning_rate_first_one_cycle,
+    #             epochs_first_one_cycle=100,
+    #             batch_size=3)
+    #         run_data_augmentation_experiment_1(run_arguments)
+
+
 
     # def run_demo():
     # path = untar_data(URLs.MNIST_SAMPLE)
