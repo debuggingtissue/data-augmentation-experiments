@@ -55,7 +55,7 @@ def clear_pyplot_memory():
     plt.close()
 
 
-def train_model_in_ensemble(ensemble_index, model_index, dataloaders, dataset_path):
+def train_model_in_ensemble(run_arguments, ensemble_index, model_index, dataloaders, dataset_path):
     # dataset_path = Path(dataset_path)
     # current_path = Path.cwd()
     # dataset_path = current_path / dataset_name
@@ -73,10 +73,12 @@ def train_model_in_ensemble(ensemble_index, model_index, dataloaders, dataset_pa
     # learn.fine_tune(2)
 
     learn = cnn_learner(dataloaders, resnet18, pretrained=True, metrics=error_rate)
-    learn.fit_one_cycle(100, 3e-2)
-    learn.recorder.plot_loss()
-    plt.show()
-
+    #3e-2
+    learn.fit_one_cycle(run_arguments.epochs_first_one_cycle, run_arguments.learning_rate_first_one_cycle)
+    if(run_arguments.save_plots):
+        learn.recorder.plot_loss()
+        plt.show()
+    clear_pyplot_memory()
 
     # learn.unfreeze()
     # learn.lr_find(show_plot=True)
