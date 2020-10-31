@@ -159,8 +159,9 @@ if __name__ == '__main__':
                 ensemble_count=1,
                 weak_learner_count_in_each_ensemble=1,
                 learning_rate_first_one_cycle=learning_rate_first_one_cycle,
-                epochs_first_one_cycle=50,
+                epochs_first_one_cycle=1,
                 batch_size=batch_size)
+
             run_data_augmentation_experiment_1(run_arguments)
 
 

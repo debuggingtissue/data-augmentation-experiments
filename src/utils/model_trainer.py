@@ -80,12 +80,12 @@ def train_model_in_ensemble(run_arguments, ensemble_index, model_index, dataload
     # print(dls.get_idxs)
     # learn = cnn_learner(dls, resnet34, pretrained=False, metrics=error_rate)
     # learn.fine_tune(2)
+    experiment_results_directory = run_arguments.plot_save_path()
 
     learn = cnn_learner(dataloaders, resnet18, pretrained=True, metrics=error_rate)
     # 3e-2
     learn.fit_one_cycle(run_arguments.epochs_first_one_cycle, run_arguments.learning_rate_first_one_cycle)
     if (run_arguments.save_plots):
-
 
         # plt.figure(figsize=(20, 10))
         plt.figure(figsize=(10, 5))
@@ -95,7 +95,7 @@ def train_model_in_ensemble(run_arguments, ensemble_index, model_index, dataload
 
         plt.title(dataset_name)
 
-        plt.savefig(f'first_loss_plot_{dataset_name}.png')
+        plt.savefig(f'{experiment_results_directory}/first_loss_plot_{dataset_name}.png')
         clear_pyplot_memory()
 
     # learn.unfreeze()

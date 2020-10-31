@@ -1,3 +1,6 @@
+import os.path
+from os import path
+
 class RunArguments():
     def __init__(self,
                  train_examples_draw_count_per_class,
@@ -16,3 +19,14 @@ class RunArguments():
         self.save_plots = save_plots
 
 
+    def plot_save_path(self):
+        results_directory = "results"
+        if path.isdir(results_directory) is False:
+            os.mkdir(results_directory)
+
+        experiment_dictionary_name = f"ted={self.train_examples_draw_count_per_class}###bs={self.batch_size}###lr_oc1={self.learning_rate_first_one_cycle}###ep_oc1={self.epochs_first_one_cycle}"
+        experiment_dictionary = results_directory + "/" + experiment_dictionary_name
+        if path.isdir(experiment_dictionary) is False:
+            os.mkdir(experiment_dictionary)
+
+        return experiment_dictionary
