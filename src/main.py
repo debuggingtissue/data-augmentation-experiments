@@ -153,13 +153,13 @@ if __name__ == '__main__':
 
     for learning_rate_first_one_cycle in [3e-3, 3e-2]:
         for batch_size in [2, 3, 10]:
-            for epoch_size in [10, 50]
+            for epoch_size in [10, 50]:
                 run_arguments_object = run_arguments.RunArguments(
                     train_examples_draw_count_per_class=36,
                     ensemble_count=1,
                     weak_learner_count_in_each_ensemble=3,
                     learning_rate_first_one_cycle=learning_rate_first_one_cycle,
-                    epochs_first_one_cycle=1,
+                    epochs_first_one_cycle=epoch_size,
                     batch_size=batch_size)
 
                 run_data_augmentation_experiment_1(run_arguments_object)
