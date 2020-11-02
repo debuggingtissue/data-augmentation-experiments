@@ -15,7 +15,7 @@ from utils import ensemble_validation_data_manager, transform_definitions_genera
 import shutil, errno
 from os import path
 import argparse
-from src.model import run_arguments
+from model import run_arguments
 
 from pathlib import Path
 

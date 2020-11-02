@@ -1,5 +1,5 @@
-from src.utils import dataset_splitters, data_block_manager, model_trainer
-from src.model import run_arguments
+from utils import dataset_splitters, data_block_manager, model_trainer
+from model import run_arguments
 
 
 import matplotlib.pyplot as plt

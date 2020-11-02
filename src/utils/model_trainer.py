@@ -5,8 +5,8 @@ matplotlib.use('Agg')
 import time
 import copy
 from fastai.vision.all import *
-from src.utils import dataset_splitters, transform_definitions_generator, fastai_cluster_plots_utils, path_utils
-from src.utils.transform_definitions_generator import generate_baseline_item_and_batch_transforms
+from utils import dataset_splitters, transform_definitions_generator, fastai_cluster_plots_utils, path_utils
+from utils.transform_definitions_generator import generate_baseline_item_and_batch_transforms
 
 import matplotlib.pyplot as plt
 
