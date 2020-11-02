@@ -115,7 +115,6 @@ def run_monte_carlo_experiment(run_arguments):
     # extract x images from positive and negative
 
 
-
 def run_data_augmentation_experiment_1(run_arguments):
     remove_old_datasets()
     source_copy_dataset_path = create_copy_of_source_dataset()
@@ -152,8 +151,8 @@ if __name__ == '__main__':
     # print(number_of_models)
     # print(learning_rate_first_one_cycle_list)
 
-    for learning_rate_first_one_cycle in [3e-3]:
-        for batch_size in [3]:
+    for learning_rate_first_one_cycle in [3e-3, 3e-2]:
+        for batch_size in [2, 3, 5, 10]:
             run_arguments = run_arguments.RunArguments(
                 train_examples_draw_count_per_class=36,
                 ensemble_count=1,
@@ -163,8 +162,6 @@ if __name__ == '__main__':
                 batch_size=batch_size)
 
             run_data_augmentation_experiment_1(run_arguments)
-
-
 
     # for learning_rate_first_one_cycle in learning_rate_first_one_cycle_list:
     #     for batch_size in batch_size_list:
@@ -176,8 +173,6 @@ if __name__ == '__main__':
     #             epochs_first_one_cycle=100,
     #             batch_size=3)
     #         run_data_augmentation_experiment_1(run_arguments)
-
-
 
     # def run_demo():
     # path = untar_data(URLs.MNIST_SAMPLE)
