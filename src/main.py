@@ -11,11 +11,11 @@ import argparse
 import ntpath
 import os.path
 from utils import ensemble_validation_data_manager, transform_definitions_generator, data_block_manager, \
-    ensemble_manager
+    ensemble_manager, run_arguments
 import shutil, errno
 from os import path
 import argparse
-from model import run_arguments
+
 
 from pathlib import Path
 
@@ -153,7 +153,7 @@ if __name__ == '__main__':
 
     for learning_rate_first_one_cycle in [3e-3, 3e-2]:
         for batch_size in [2, 3, 5, 10]:
-            run_arguments = run_arguments.RunArguments(
+            run_arguments_object = run_arguments.RunArguments(
                 train_examples_draw_count_per_class=36,
                 ensemble_count=1,
                 weak_learner_count_in_each_ensemble=1,
@@ -161,7 +161,7 @@ if __name__ == '__main__':
                 epochs_first_one_cycle=1,
                 batch_size=batch_size)
 
-            run_data_augmentation_experiment_1(run_arguments)
+            run_data_augmentation_experiment_1(run_arguments_object)
 
     # for learning_rate_first_one_cycle in learning_rate_first_one_cycle_list:
     #     for batch_size in batch_size_list:
